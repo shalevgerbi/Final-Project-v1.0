@@ -1,70 +1,52 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
+from scipy import signal as mySignal
 
-plt.rcParams['figure.dpi'] = 100
-plt.rcParams['figure.figsize'] = (9, 7)
 sampFreq, sound = wavfile.read('./DemoCDE.wav')
-
-print(sound.dtype, sampFreq)
-
+print(f"samefreq: {sampFreq}, sound: {sound}")
+print(f"q: {2.0 ** 15}")
 sound = sound / 2.0 ** 15
-print(sound.shape)
-
+print("sound", sound)
+print(f"shape: {sound.shape}")
+# sound.shape = length of data
+# sempfreq = how many freq per millisecond?
 length_in_s = sound.shape[0] / sampFreq
 print(length_in_s)
+# lenght_in_s = lenght in seconds of wav file
 
-# plt.subplot(2,1,1)
-# plt.plot(sound[:,0], 'r')
-# plt.xlabel("left channel, sample #")
-# plt.subplot(2,1,2)
-# plt.plot(sound[:,1], 'b')
-# plt.xlabel("right channel, sample #")
-# plt.tight_layout()
-# plt.show()
-
+print(f"arrange: {np.arange(sound.shape[0])}")  # works like range
+print()
 time = np.arange(sound.shape[0]) / sound.shape[0] * length_in_s
-
-# plt.subplot(2,1,1)
-# plt.plot(time, sound[:,0], 'r')
-# plt.xlabel("time, s [left channel]")
-# plt.ylabel("signal, relative units")
-# plt.subplot(2,1,2)
-# plt.plot(time, sound[:,1], 'b')
-# plt.xlabel("time, s [right channel]")
-# plt.ylabel("signal, relative units")
-# plt.tight_layout()
-# plt.show()
+print(f"time: {time}")
+plt.subplot(2, 1, 1)
+plt.plot(time, sound[:, 0], 'r')
+plt.xlabel("time, s [left channel]")
+plt.ylabel("signal, relative units")
+plt.subplot(2, 1, 2)
+plt.plot(time, sound[:, 1], 'b')
+plt.xlabel("time, s [right channel]")
+plt.ylabel("signal, relative units")
+plt.tight_layout()
+plt.show()
 
 signal = sound[:, 0]
 
-# plt.plot(time[6000:7000], signal[6000:7000])
-# plt.xlabel("time, s")
-# plt.ylabel("Signal, relative units")
-# plt.show()
-
 fft_spectrum = np.fft.rfft(signal)
+signalFilter = []
+for i in signal:
+    if i > 0.1 or i < -0.1:
+        signalFilter.append(i)
+print("signalFilter: ", signalFilter)
 freq = np.fft.rfftfreq(signal.size, d=1. / sampFreq)
-
+print("________")
+print("fft spectrum")
 print(fft_spectrum)
-
+print("________")
 fft_spectrum_abs = np.abs(fft_spectrum)
-
-print(fft_spectrum)
-#
-# plt.plot(freq, fft_spectrum_abs)
-# plt.xlabel("frequency, Hz")
-# plt.ylabel("Amplitude, units")
-# plt.show()
-
-# plt.plot(freq[:500], fft_spectrum_abs[:500])
-# plt.xlabel("frequency, Hz")
-# plt.ylabel("Amplitude, units")
-# plt.arrow(90, 5500, -20, 1000, width=2, head_width=8, head_length=200, fc='k', ec='k')
-# plt.arrow(200, 4000, 20, -1000, width=2, head_width=8, head_length=200, fc='g', ec='g')
-# plt.show()
-
-
+print("absolute fft spectrum")
+print(fft_spectrum_abs)
+#fft_spectrum_abs.np.fft.rfft
 freqArr = []
 di = dict()
 for i, f in enumerate(fft_spectrum_abs):
@@ -187,6 +169,7 @@ knownFreq = [
     7902.13
 ]
 
+
 temp = di.items()
 print(temp)
 
@@ -200,50 +183,81 @@ for key, value in di.items():
             else:
                 finalDict[i] = value
 
-finalDict = {k: v for k, v in sorted(finalDict.items(), key=lambda item: item[1], reverse=True)}
+# finalDict = {k: v for k, v in sorted(finalDict.items(), key=lambda item: item[1], reverse=True)}
+sortedDict = {k: v for k, v in sorted(finalDict.items(), key=lambda item: item[1], reverse=True)}
 # dict(sorted(finalDict.items(), key=lambda item: item[1]))
 print(finalDict)
 # maxVal = finalDict
 print(list(finalDict.keys())[0])
 keysArr = []
-maxVal = (list(finalDict.values())[0])
+maxVal = (list(sortedDict.values())[0])
 
-for key,value in finalDict.items():
-    if value > maxVal/2:
+for key, value in finalDict.items():
+    if value > maxVal / 2:
         keysArr.append(key)
 print(keysArr)
-# for num in knownFreq:
-#     for key, value in di.items():
-#         if (num + 5) > key > (num - 5):
-#             if finalDict is None:
-#
-#                 finalDict[key] = value
-#                 continue
-#             finalDict[key] = value
+
+for i, f in enumerate(freq):
+    if f < 62 and f > 58:  # (1)
+        fft_spectrum[i] = 0.0
+    if f < 21 or f > 20000:  # (2)
+        fft_spectrum[i] = 0.0
+
+plt.plot(freq[:3000], np.abs(fft_spectrum[:3000]))
+plt.xlabel("frequency, Hz")
+plt.ylabel("Amplitude, units")
+plt.show()
+
+plt.plot(np.abs(fft_spectrum_abs[:88200]), time[:176400:2])
+plt.ylabel("frequency, Hz")
+plt.xlabel("Time")
+plt.show()
 
 
-# if(freqArr.int(freq[i]))
-# freqArr.append(int(freq[i]))
+#plt.plot(np.abs(fft_spectrum_abs[:3150]), time[:176400:56])
+plt.ylabel("frequency, Hz")
+plt.xlabel("Time")
 
-# for i in range(0,len(di)):
-#
+plt.plot(time[::2], fft_spectrum_abs[:-1], 'r')
+plt.show()
+# x = myFft.fft(sound);
+# print("x: ",x)
+# plt.plot(x,0), fft_spectrum_abs[:-1], 'r')
+# plt.show()
 
-# x = map
-# counter=[]
-# freq = []
-# for i,f in enumerate(fft_spectrum_abs):
-#     if f > 350:  # looking at amplitudes of the spikes higher than 350
-#          freq.append(np.round(freq[i],0))
-#
-# notes = dict
-#
-# for i, f in enumerate(fft_spectrum_abs):
-#     if f > 350:  # looking at amplitudes of the spikes higher than 350
-#
-#         if int(np.round(freq[i])) in notes:
-#             notes[int(np.round(freq[i]))] += 1
-#         else:
-#             notes[int(np.round(freq[i]))] = 1
-#
-#
-#
+rng = np.random.default_rng()
+fs = 44100
+N = 176400
+amp = 2 * np.sqrt(2)
+noise_power = 0.01 * fs / 2
+
+#noise_power = 0
+time = np.arange(N/2 +1) / float(fs)
+mod = 500*np.cos(2*np.pi*0.25*time)
+mod = fft_spectrum_abs
+carrier = amp * np.sin(2*np.pi*3e3*time + mod)
+carrier = signal[:88201]
+noise = rng.normal(scale=np.sqrt(noise_power),
+                   size=time.shape)
+noise *= np.exp(-time/5)
+x = carrier + noise
+f, t, Zxx = mySignal.stft(x, fs, nperseg=1000)
+plt.pcolormesh(t, f, np.abs(Zxx), vmin=0, vmax=amp, shading='gouraud')
+plt.title('STFT Magnitude')
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.show()
+
+
+frequencies, times, spectrogram = signal.spectrogram(samples, sampFreq)
+
+
+
+plt.pcolormesh(times, frequencies, spectrogram)
+#plt.imshow(spectrogram)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.show()
+
+
+

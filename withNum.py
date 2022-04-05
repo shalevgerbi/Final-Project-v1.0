@@ -1,103 +1,40 @@
-# Python example - Fourier transform using numpy.fft method
-
+import matplotlib.pyplot as plt
 import numpy as np
+from scipy import signal
+from scipy.io import wavfile
 
-import matplotlib.pyplot as plotter
+sample_rate, samples = wavfile.read('Mary-Had.wav')
 
-# How many time points are needed i,e., Sampling Frequency
+frequencies, times, spectrogram = signal.spectrogram(samples[:,1], sample_rate)
+# frequencies2, times2, spectrogram2 = signal.spectrogram(samples[:,1], sample_rate)
+print("sampleRate", sample_rate)
+print("samples", samples)
 
-samplingFrequency = 100;
+ax = plt.gca()
+ax.set_xlim([0, 15])
+ax.set_ylim([250, 1000])
+finalFreq = []
+# finalSpec = []
+# for i in range(len(frequencies)):
+#     finalFreq.append(np.maximum(frequencies[i], frequencies2[i]))
+#     # spectrogram
 
-# At what intervals time points are sampled
+print("frequencies",frequencies)
+print("spectogram",spectrogram)
+plt.pcolormesh(times, frequencies, spectrogram/2)
+# plt.imshow(spectrogram)
+plt.yticks(range(0, 1000,50))
+# plt.x(times)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.show()
 
-samplingInterval = 1 / samplingFrequency;
 
-# Begin time period of the signals
-
-beginTime = 0;
-
-# End time period of the signals
-
-endTime = 10;
-
-# Frequency of the signals
-
-signal1Frequency = 4;
-
-signal2Frequency = 7;
-
-# Time points
-
-time = np.arange(beginTime, endTime, samplingInterval);
-
-# Create two sine waves
-
-amplitude1 = np.sin(2 * np.pi * signal1Frequency * time)
-
-amplitude2 = np.sin(2 * np.pi * signal2Frequency * time)
-
-# Create subplot
-
-figure, axis = plotter.subplots(4, 1)
-
-plotter.subplots_adjust(hspace=1)
-
-# Time domain representation for sine wave 1
-
-axis[0].set_title('Sine wave with a frequency of 4 Hz')
-
-axis[0].plot(time, amplitude1)
-
-axis[0].set_xlabel('Time')
-
-axis[0].set_ylabel('Amplitude')
-
-# Time domain representation for sine wave 2
-
-axis[1].set_title('Sine wave with a frequency of 7 Hz')
-
-axis[1].plot(time, amplitude2)
-
-axis[1].set_xlabel('Time')
-
-axis[1].set_ylabel('Amplitude')
-
-# Add the sine waves
-
-amplitude = amplitude1 + amplitude2
-
-# Time domain representation of the resultant sine wave
-
-axis[2].set_title('Sine wave with multiple frequencies')
-
-axis[2].plot(time, amplitude)
-
-axis[2].set_xlabel('Time')
-
-axis[2].set_ylabel('Amplitude')
-
-# Frequency domain representation
-
-fourierTransform = np.fft.fft(amplitude) / len(amplitude)  # Normalize amplitude
-
-fourierTransform = fourierTransform[range(int(len(amplitude) / 2))]  # Exclude sampling frequency
-
-tpCount = len(amplitude)
-
-values = np.arange(int(tpCount / 2))
-
-timePeriod = tpCount / samplingFrequency
-
-frequencies = values / timePeriod
-
-# Frequency domain representation
-
-axis[3].set_title('Fourier transform depicting the frequency components')
-
-axis[3].plot(frequencies, abs(fourierTransform))
-
-axis[3].set_xlabel('Frequency')
-
-axis[3].set_ylabel('Amplitude')
-
-plotter.show()
+ax = plt.gca()
+ax.set_xlim([0, 4])
+ax.set_ylim([250, 1000])
+# plt.pcolormesh(times2, frequencies2, spectrogram2)
+# plt.imshow(spectrogram)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.show()
