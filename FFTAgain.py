@@ -249,15 +249,15 @@ plt.xlabel('Time [sec]')
 plt.show()
 
 
-frequencies, times, spectrogram = signal.spectrogram(samples, sampFreq)
+# frequencies, times, spectrogram = signal.spectrogram(samples, sampFreq)
 
 
 
-plt.pcolormesh(times, frequencies, spectrogram)
-#plt.imshow(spectrogram)
-plt.ylabel('Frequency [Hz]')
-plt.xlabel('Time [sec]')
-plt.show()
+# plt.pcolormesh(times, frequencies, spectrogram)
+# #plt.imshow(spectrogram)
+# plt.ylabel('Frequency [Hz]')
+# plt.xlabel('Time [sec]')
+# plt.show()
 
 
 
