@@ -3,16 +3,19 @@ import numpy as np
 from scipy import signal
 from scipy.io import wavfile
 
+
 # reading audio (.wav) file
-##sample_rate, samples = wavfile.read('DemoD.wav')
-# sample_rate, samples = wavfile.read('DemoCDE.wav')
-sample_rate, samples = wavfile.read('DemoCDEFD#G#.wav')
+# sample_rate, samples = wavfile.read('DemoD.wav')
+
+sample_rate, samples = wavfile.read('doremi.wav')
+# sample_rate, samples = wavfile.read('DemoCDEFD#G#.wav')
 # sample_rate, samples = wavfile.read('DemoCDEFD#G#Octave.wav')
-sample_rate, samples = wavfile.read('DemoCDEFD#G#MONO.wav')
+# sample_rate, samples = wavfile.read('DemoCDEFD#G#MONO.wav')
 # converts signal into frequency, time, and [frequency,time] amplitude with resolution of 2**12
 # resolution needs to be high but not more than length of signal
 ##f, t, Sxx = signal.spectrogram(samples[:,0],sample_rate,nperseg=4096*2)
-f, t, Sxx = signal.spectrogram(samples, sample_rate, nperseg=44100//8)
+f, t, Sxx = signal.spectrogram(samples[:,0], sample_rate  ,nperseg=sample_rate)
+# f2, t2, Sxx2 = signal.spectrogram(samples[:,1], sample_rate, nperseg=44100//4)
 # f2, t2, Sxx = signal.spectrogram(samples[:,1], sample_rate, nperseg=44100//8)
 knownFreq = [
     16.35,
@@ -127,19 +130,36 @@ knownFreq = [
 
 arr = []
 
+#finding max col in Sxx
 xmax = Sxx.max(axis=0)
+# xmax2 = Sxx2.max(axis=0)
 # Sxx.index(xmax[0])
+
+
+#append to indexArr the indexes of the max value in Sxx
+# for i in range(len(xmax)):
+#     indexArr.append(np.where(Sxx == xmax[i]))
+# print(xmax)
+# print(indexArr)
+
+
 indexArr = []
-for i in range(len(xmax)):
-    indexArr.append(np.where(Sxx == xmax[i]))
-print(xmax)
-print(indexArr)
-
-
-
 indexArr2 =[]
-indexArr2.append(np.argmax(Sxx,axis=0) * 8)
-print(indexArr2)
+# indexArr.append(np.argmax(Sxx,axis=0) *4 )
+indexArr2.append(np.argmax(Sxx,axis=0))
+print("indexArr",indexArr)
+print("indexArr2",indexArr2)
+
+maxArr=[]
+# for i in range(len(indexArr)):
+    # if np.any(Sxx[indexArr[i]][i] > Sxx2[indexArr2[i]][i]):
+    #     maxArr.append(indexArr[i])
+    # else:
+    #     maxArr.append(indexArr2[i])
+    # maxArr.append(np.maximum(Sxx[indexArr[i],i] * 8,Sxx2[indexArr2[i],i] * 8))
+
+print("maxArr", maxArr)
+
 # for i in range(len(Sxx)):
 #     arr.append(max(Sxx[:,i]))
 # print(arr)
